@@ -37,23 +37,25 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        // 1. Public resources
-                        .requestMatchers("/h2-console/**", "/login", "/css/**", "/js/**", "/error").permitAll()
-                        .requestMatchers("/api/rest/auth/**").permitAll()
+                                // 1. Public resources
+                                .requestMatchers("/h2-console/**", "/login", "/css/**", "/js/**", "/error").permitAll()
+                                .requestMatchers("/api/rest/auth/**").permitAll()
 
-                        // 2. Swagger docs
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                                // 2. Swagger docs
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
-                        // 3. REST API Security (Requires Role)
+                                // 3. REST API Security (Requires Role)
 //                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/rest/**").hasAnyRole("USER", "ADMIN")
 //                        .requestMatchers("/api/rest/**").hasRole("ADMIN")
 // Temporarily open for Lecture 2.11.2. Will secure in future JWT lecture.
-                        .requestMatchers("/api/rest/**").permitAll()
+//                        .requestMatchers("/api/rest/**").permitAll()
+                                // secure it again
+                                .requestMatchers("/api/rest/**").authenticated()
 
-                        // 4. Web UI Admin
-                        .requestMatchers("/books/add", "/books/edit/**", "/books/delete/**").hasRole("ADMIN")
+                                // 4. Web UI Admin
+                                .requestMatchers("/books/add", "/books/edit/**", "/books/delete/**").hasRole("ADMIN")
 
-                        .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 )
                 // REST API Error Handling:
                 // If the URL starts with /api/rest/, return 401. Otherwise, redirect to /login.
@@ -97,7 +99,3 @@ public class WebSecurityConfig {
         return authProvider;
     }
 }
-
-
-
-
